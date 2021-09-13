@@ -22,6 +22,9 @@ NodeJS - https://nodejs.org/en/download/
  - Run 'npm ci'
  - Run 'npm start'
 
+### To seed data:
+- Call the SeedData function in dbHandler.js
+
  A browsertab will automatically open and load the app.
 
 ### Development set-up
