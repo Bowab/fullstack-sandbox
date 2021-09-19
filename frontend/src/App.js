@@ -7,7 +7,6 @@ import { ToDoLists } from './todos/components/ToDoLists'
 
 
 // (async () => {
-//   // LogDbData();
 //   var lol = await GetTodos();
 //   console.log("appjs", lol);
 // })();

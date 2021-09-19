@@ -11,6 +11,7 @@ import { ToDoListForm } from './ToDoListForm';
 import { GetTodos, WriteTodo } from '../../dbHandler';
 import CheckIcon from '@material-ui/icons/Check';
 import { makeStyles } from '@material-ui/styles';
+import { debounce } from 'lodash';
 
 
 const useStyles = makeStyles({
@@ -19,21 +20,15 @@ const useStyles = makeStyles({
   }
 })
 
-const LoadTodoLists = () => {
-
-  var data = Promise.resolve(GetTodos());
-  return data;
-
-}
+const delaySave = debounce(WriteTodo, 1000);
 
 export const ToDoLists = ({ style }) => {
   const [toDoLists, setToDoLists] = useState({});
   const [activeList, setActiveList] = useState();
-
   const classes = useStyles();
-
+  
   useEffect(() => {
-    LoadTodoLists()
+    GetTodos()
       .then(setToDoLists)
   }, [])
 
@@ -55,8 +50,8 @@ export const ToDoLists = ({ style }) => {
             <ListItemIcon>
               <ReceiptIcon />
             </ListItemIcon>
-            <ListItemText primary={toDoLists[key].title} /> 
-            {toDoLists[key].todos.filter(x => !x.complete).length <= 0 ? <CheckIcon className={classes.complete}/> : '' }
+            <ListItemText primary={toDoLists[key].title} />
+            {toDoLists[key].todos.every((todo) => todo.complete) ? <CheckIcon className={classes.complete} /> : ''}
           </ListItem>)}
         </List>
       </CardContent>
@@ -67,7 +62,9 @@ export const ToDoLists = ({ style }) => {
       saveToDoList={(id, { todos }) => {
         toDoLists[activeList].todos = todos;
         // Save to database!
-        WriteTodo(toDoLists);
+
+        delaySave(toDoLists);
+
         setToDoLists([...toDoLists]); // Force re-render since we are passing a new list. Thanks spread operator ;)
       }}
     />}
